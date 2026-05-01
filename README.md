@@ -1,80 +1,101 @@
 <div align="center">
 
-<img src="apps/frontend/public/logo.png" alt="Indom Logo" width="120" />
+<img src="apps/frontend/public/logo.png" alt="Indom" width="140" />
 
-# INDOM.
+<h1>INDOM.</h1>
 
-### Your CV. Their requirements. No mercy.
+<h3>Your CV. Their requirements. No mercy.</h3>
 
-**AI-powered local CV tailor built by freshers, for freshers.**  
-Zero cost. Zero cloud. Zero BS. 100% open source.
+<p>
+  <a href="https://instagram.com/getindom">📸 Instagram</a> ✦
+  <a href="https://github.com/yugdabgar21/Indom/issues">🐛 Report Bug</a> ✦
+  <a href="https://github.com/yugdabgar21/Indom/issues">✨ Request Feature</a> ✦
+  <a href="CONTRIBUTING.md">🤝 Contribute</a>
+</p>
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.10+-green.svg)](https://python.org)
-[![Next.js](https://img.shields.io/badge/Next.js-15-green.svg)](https://nextjs.org)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](CONTRIBUTING.md)
+<p>
+  <img src="https://img.shields.io/badge/License-Apache_2.0-00ff87.svg" alt="License" />
+  <img src="https://img.shields.io/badge/Python-3.10+-00ff87.svg" alt="Python" />
+  <img src="https://img.shields.io/badge/Next.js-15-00ff87.svg" alt="Next.js" />
+  <img src="https://img.shields.io/badge/PRs-Welcome-00ff87.svg" alt="PRs Welcome" />
+  <img src="https://img.shields.io/badge/Cost-Zero-00ff87.svg" alt="Zero Cost" />
+  <img src="https://img.shields.io/badge/Cloud-None-00ff87.svg" alt="No Cloud" />
+</p>
 
 ---
 
-*The hiring game is rigged against freshers.*  
-*ATS bots filter your CV before a human ever reads it.*  
-*Every tool that fixes this costs money.*  
-
-**We're rewriting it.**
+> *The hiring game is rigged. ATS bots filter your CV before a human ever reads it.*
+> *Job descriptions ask for 5 years experience in a tool that's 2 years old.*
+> *Every tool that fixes this costs money.*
+>
+> **We're rewriting it. Free. Forever. Local.**
 
 ---
 
 </div>
 
-## What is Indom?
+## 🎯 What is Indom?
 
-Indom analyzes your CV against any job description, tailors it to match, generates a professional LaTeX PDF, and gives you a 5-day learning roadmap — all running locally on your machine.
+**Indom** is a 100% free, open source, locally-run CV tailoring tool. It takes your master CV, cross-references it with any job description, and generates a brand new ATS-optimized LaTeX PDF — tailored, smart, and ready to get you in the room.
 
-No cloud. No subscriptions. No data leaving your laptop. Ever.
+Unlike other tools, Indom tells you **exactly what it changed** and gives you a **5-day free learning roadmap** so you actually know what you claimed before the interview.
 
-## How It Works
+---
+
+## ⚡ How It Works
 
 ```
-Your CV + Job Description
-        ↓
-   AI Analysis
-        ↓
-Smart Faking (just enough, fresher-level)
-        ↓
-LaTeX PDF Generated
-        ↓
-Faking Warnings + 5-Day Learning Roadmap
-        ↓
-You walk into that interview prepared
+📄 Your Master CV  +  📋 Job Description
+              ↓
+         🤖 AI Analysis
+              ↓
+     🎭 Smart Faking Engine
+     (calibrated to job level)
+              ↓
+     📝 LaTeX CV Generated
+              ↓
+  ⚠️  Faking Warnings + Match Score
+              ↓
+  📚 5-Day Free Learning Roadmap
+              ↓
+        🚀 Get In The Room
 ```
 
-**Projects are NEVER modified.** Only skills, keywords, and objective are tailored.  
-**Every faked item is flagged.** We tell you exactly what to learn before you apply.
+> **Projects are NEVER modified.** Only skills, keywords, and objective are tailored.
+> **Every faked item is flagged in red.** No surprises at the interview.
 
-## Features
+---
 
-- **Smart CV Tailoring** — AI maps your existing skills to job requirements
-- **Calibrated Faking** — Fresher job = fresher level faking, never over-inflated
-- **LaTeX PDF Output** — Cleanest, most ATS-compatible format possible
-- **Real-time Progress** — SSE streaming with live progress bar
-- **Faking Warning Panel** — Every added skill shown in red, no surprises
-- **Match Score** — Before and after score so you see the difference
-- **5-Day Learning Roadmap** — Free YouTube and course links via SearXNG
-- **Zero Cloud** — Everything runs on your machine, CV data never leaves
-- **Multi-Model Support** — OpenRouter, Ollama, OpenAI, Gemini — your choice
-- **Settings UI** — Configure your API key and model from the browser, no .env editing
+## ✨ Features
 
-## Prerequisites
+| Feature | Description |
+|---------|-------------|
+| 🎭 Smart Faking | Adds only what the JD asks, calibrated to experience level |
+| 📊 Match Score | Before vs after score so you see the real difference |
+| ⚠️ Faking Warnings | Every added skill shown clearly — full transparency |
+| 📝 LaTeX PDF | Cleanest, most ATS-compatible output format |
+| 📚 Learning Roadmap | 5-day plan with free YouTube and course links via SearXNG |
+| 🔒 Fully Local | CV never leaves your machine. Zero cloud. Zero tracking. |
+| ⚙️ Settings UI | Configure API key and model from browser — no .env editing |
+| 🔄 Multi-Model | OpenRouter, Ollama, OpenAI, Gemini — your choice |
+| ⚡ Real-time | SSE streaming with live progress bar |
+| 🛡️ ATS-Safe | LaTeX output scores higher than HTML/CSS PDFs |
+
+---
+
+## 🛠️ Prerequisites
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| Python | 3.10+ | Backend |
-| Node.js | 18+ | Frontend |
-| uv | Latest | [astral.sh/uv](https://astral.sh/uv) |
-| MiKTeX or TeX Live | Latest | For `pdflatex` PDF compilation |
-| SearXNG | Latest | Optional — for real learning resource links |
+| Python | 3.10+ | Backend runtime |
+| Node.js | 18+ | Frontend runtime |
+| uv | Latest | [astral.sh/uv](https://astral.sh/uv) — Python package manager |
+| MiKTeX or TeX Live | Latest | For `pdflatex` — PDF compilation |
+| Docker | Latest | For SearXNG (optional but recommended) |
 
-## Quick Start
+---
+
+## 🚀 Quick Start
 
 ### 1. Clone and configure
 
@@ -84,13 +105,13 @@ cd Indom
 cp .env.example .env
 ```
 
-### 2. Start SearXNG (Optional but recommended)
+### 2. Start SearXNG — for real learning resource links (optional)
 
 ```bash
 docker run -d -p 8080:8080 searxng/searxng
 ```
 
-### 3. Run Backend
+### 3. Run the Backend
 
 ```bash
 cd apps/backend
@@ -98,7 +119,7 @@ uv sync
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-### 4. Run Frontend
+### 4. Run the Frontend
 
 ```bash
 cd apps/frontend
@@ -110,81 +131,117 @@ npm run dev
 
 Visit **http://localhost:3000**
 
-Click the ⚙️ settings icon and enter your API key and model details. No .env editing required.
+Click the ⚙️ settings icon → enter your API key and model. Done.
 
-## Configuration
+---
 
-All config lives in `config.yaml` at the root:
+## ⚙️ Configuration
+
+Edit `config.yaml` at the root:
 
 ```yaml
 model:
-  provider: openrouter   # openrouter | ollama | openai | gemini
+  provider: openrouter    # openrouter | ollama | openai | gemini
   name: your-model-name
-  api_key: your-api-key  # or set via UI settings
+  api_key: your-api-key   # or configure via UI settings panel
 
 searxng:
   url: http://localhost:8080
 
-template: classic        # classic | modern | minimal
+template: classic          # classic | modern (coming soon)
 ```
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```
 indom/
 ├── apps/
-│   ├── frontend/          # Next.js 15 + React + TypeScript + Tailwind
-│   └── backend/           # FastAPI + Python + LiteLLM
-├── docs/                  # Full project documentation
-├── searxng/               # SearXNG configuration
-├── config.yaml            # Your local config (gitignored)
-├── config.yaml.example    # Template config
+│   ├── frontend/           # Next.js 15 + React + TypeScript + Tailwind
+│   │   └── src/
+│   │       ├── app/        # Pages and routes
+│   │       └── components/ # UI components
+│   └── backend/            # FastAPI + Python + LiteLLM
+│       └── app/
+│           ├── routes/     # API endpoints
+│           └── services/   # CV parser, AI engine, LaTeX builder, SearXNG
+├── docs/                   # Full project documentation
+├── searxng/                # SearXNG Docker config
+├── config.yaml.example     # Config template
 ├── docker-compose.yml
 └── .env.example
 ```
 
-## Tech Stack
+---
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 15, React 19, TypeScript, Tailwind CSS |
-| Backend | FastAPI, Python, LiteLLM |
-| AI | OpenRouter / Ollama / Any LLM provider |
-| PDF | pdflatex (MiKTeX / TeX Live) |
-| Search | SearXNG (self-hosted) |
-| Storage | TinyDB (local JSON) |
+## 🆚 Why Indom?
 
-## Why Indom over other tools?
-
-| Feature | Indom | Resume Matcher | Resume.io | Kickresume |
-|---------|-------|---------------|-----------|------------|
+| Feature | **Indom** | Resume Matcher | Resume.io | Kickresume |
+|---------|-----------|---------------|-----------|------------|
 | Free forever | ✅ | ✅ | ❌ | ❌ |
 | Smart faking | ✅ | ❌ | ❌ | ❌ |
+| Faking warnings | ✅ | ❌ | ❌ | ❌ |
 | Learning roadmap | ✅ | ❌ | ❌ | ❌ |
 | LaTeX output | ✅ | ❌ | ❌ | ❌ |
 | Fully local | ✅ | ❌ | ❌ | ❌ |
 | Projects untouched | ✅ | ❌ | ❌ | ❌ |
-| Faking warnings | ✅ | ❌ | ❌ | ❌ |
+| No account needed | ✅ | ❌ | ❌ | ❌ |
 
-## Contributing
+---
+
+## 🗺️ Roadmap
+
+- [x] CV upload and parsing
+- [x] AI tailoring with smart faking
+- [x] LaTeX PDF generation and compilation
+- [x] Real-time SSE progress streaming
+- [x] Faking warning panel
+- [x] Match score before and after
+- [x] 5-day learning roadmap via SearXNG
+- [x] Settings UI for API key and model config
+- [ ] Cover letter generation
+- [ ] OCR support for image-based CVs
+- [ ] More LaTeX templates
+- [ ] Setup wizard for non-developers
+- [ ] Docker one-command setup
+
+---
+
+## 🤝 Contributing
 
 Indom is built by freshers for freshers. Every contribution matters.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get started.
+```bash
+# Fork the repo, then:
+git clone https://github.com/YOUR_USERNAME/Indom.git
+cd Indom
+git checkout -b feature/your-feature-name
+# make your changes
+git commit -m "feat: your feature"
+git push origin feature/your-feature-name
+# open a PR
+```
 
 **Good first issues are labeled** `good first issue` in the Issues tab.
 
-Areas we need help with:
-- New LaTeX CV templates
-- Better AI prompts
-- UI improvements
-- More SearXNG search queries
-- Documentation and translations
+We need help with:
+- 🎨 New LaTeX CV templates
+- 🤖 Better AI prompts
+- 💅 UI/UX improvements
+- 🔍 SearXNG search query improvements
+- 📖 Documentation and translations
 
-## License
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 
-Apache 2.0 — Open source only. You can use, modify, and distribute this freely.  
-You cannot take this code and sell it as a paid product.
+---
+
+## 📄 License
+
+Apache License 2.0 — Open source only.
+
+You can use, modify, and distribute freely.
+You **cannot** take this and sell it as a paid product.
 
 ---
 
@@ -194,6 +251,6 @@ You cannot take this code and sell it as a paid product.
 
 **indom. © 2026**
 
-[Instagram](https://instagram.com/getindom) · [GitHub Issues](https://github.com/yugdabgar21/Indom/issues)
+[Instagram @getindom](https://instagram.com/getindom) · [Issues](https://github.com/yugdabgar21/Indom/issues) · [Apache 2.0](LICENSE)
 
 </div>

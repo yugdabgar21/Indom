@@ -184,9 +184,8 @@ indom/
 | Faking warnings | ✅ | ❌ | ❌ | ❌ |
 | Learning roadmap | ✅ | ❌ | ❌ | ❌ |
 | LaTeX output | ✅ | ❌ | ❌ | ❌ |
-| Fully local | ✅ | ❌ | ❌ | ❌ |
-| Projects untouched | ✅ | ❌ | ❌ | ❌ |
-| No account needed | ✅ | ❌ | ❌ | ❌ |
+| Fully local | ✅ | ✅ | ❌ | ❌ |
+| No account needed | ✅ | ✅ | ❌ | ❌ |
 
 ---
 

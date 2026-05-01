@@ -1,0 +1,57 @@
+# Indom Configuration File
+# To switch AI providers, uncomment the one you want to use and comment out the others.
+# Add the required API keys to apps/backend/.env
+
+model:
+  # ==============================
+  # 1. Ollama (Local & Free) - DEFAULT
+  # ==============================
+  # type: "ollama"
+  # model_name: "qwen2.5:7b" # Can be changed to 0.5b/1.5b for lower RAM
+  # endpoint: "http://localhost:11434"
+
+  # ==============================
+  # 2. OpenRouter (Cloud)
+  # Requires OPENROUTER_API_KEY in .env
+  # ==============================
+  type: "openrouter"
+  model_name: "google/gemma-4-31b-it:free" 
+  endpoint: "https://openrouter.ai/api/v1"
+
+  # ==============================
+  # 3. OpenAI (Cloud)
+  # Requires OPENAI_API_KEY in .env
+  # ==============================
+  # type: "openai"
+  # model_name: "gpt-4o-mini"
+  # endpoint: null
+
+  # ==============================
+  # 4. Anthropic (Cloud)
+  # Requires ANTHROPIC_API_KEY in .env
+  # ==============================
+  # type: "anthropic"
+  # model_name: "claude-3-haiku-20240307"
+  # endpoint: null
+
+  # ==============================
+  # 5. Google Gemini (Cloud)
+  # Requires GEMINI_API_KEY in .env
+  # ==============================
+  # type: "gemini"
+  # model_name: "gemini/gemini-1.5-flash"
+  # endpoint: null
+
+  # ==============================
+  # 6. DeepSeek (Cloud)
+  # Requires DEEPSEEK_API_KEY in .env
+  # ==============================
+  # type: "deepseek"
+  # model_name: "deepseek/deepseek-chat"
+  # endpoint: null
+
+template:
+  default: "templates/classic.tex"
+  
+searxng:
+  url: "http://localhost:8080" # Default local Docker instance

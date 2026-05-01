@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0a;
+  --color-accent: #00ff87;
+  --color-foreground: #ffffff;
+  --color-warning: #ff3f3f;
+  --color-success: #00ff87;
+  --color-border: #ffffff;
+  
+  --font-sans: "Inter", sans-serif;
+  --font-heading: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .brutal-border {
+    border: 2px solid var(--color-border);
+  }
+  
+  .brutal-shadow {
+    box-shadow: 4px 4px 0px var(--color-accent);
+  }
+  
+  .brutal-shadow-sm {
+    box-shadow: 2px 2px 0px var(--color-accent);
+  }
+  
+  .brutal-shadow-hover:hover {
+    box-shadow: 6px 6px 0px var(--color-accent);
+    transform: translate(-2px, -2px);
+    transition: all 0.1s ease-in-out;
+  }
+  
+  .brutal-shadow-warning {
+    box-shadow: 4px 4px 0px var(--color-warning);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 255, 135, 0.4)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 24px rgba(0, 255, 135, 0.8)); transform: scale(1.05); }
+}
+
+.logo-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}

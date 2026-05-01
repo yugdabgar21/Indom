@@ -1,0 +1,16 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.136.1",
+    "json-repair>=0.59.5",
+    "litellm>=1.83.14",
+    "pdfplumber>=0.11.9",
+    "pydantic>=2.12.5",
+    "python-multipart>=0.0.26",
+    "tinydb>=4.8.2",
+    "uvicorn>=0.46.0",
+]

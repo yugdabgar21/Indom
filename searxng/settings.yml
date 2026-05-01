@@ -1,0 +1,9 @@
+use_default_settings: true
+
+server:
+    secret_key: "indom_secret_key_123"
+
+search:
+    formats:
+        - html
+        - json

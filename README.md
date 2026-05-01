@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <p align="center">
   <img src="apps/frontend/public/logo.png" width="120" alt="Indom Logo" />
 </p>

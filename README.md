@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center">
   <img src="apps/frontend/public/logo.png" width="120" alt="Indom Logo" />
 </p>
@@ -69,3 +70,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+=======
+# Indom
+Your CV. Their requirements. No mercy. AI-powered local CV tailor for freshers. Zero cost. Zero cloud. 100% open source.
+>>>>>>> 5e238606ff292564487f20b4657651c3792ca052

@@ -95,7 +95,11 @@
           Derivative Works a copy of this License; and
 
       (b) You must cause any modified files to carry prominent notices
+<<<<<<< HEAD
           stating that you changed the files; and
+=======
+          stating that You changed the files; and
+>>>>>>> 5e238606ff292564487f20b4657651c3792ca052
 
       (c) You must retain, in the Source form of any Derivative Works
           that You distribute, all copyright, patent, trademark, and

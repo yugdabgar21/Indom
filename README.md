@@ -116,7 +116,8 @@ docker run -d -p 8080:8080 searxng/searxng
 ```bash
 cd apps/backend
 uv sync
-uv run uvicorn app.main:app --reload --port 8000
+uv run python -m uvicorn app.main:app --reload --port 8000
+
 ```
 
 ### 4. Run the Frontend

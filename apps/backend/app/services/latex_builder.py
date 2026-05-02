@@ -19,6 +19,11 @@ import tempfile
 import yaml
 from app.models.schemas import CompileRequest
 
+# Restrict template selection to explicitly approved files only.
+ALLOWED_TEMPLATE_NAMES = {
+    "template.tex",
+}
+
 def load_template_path(template_name: str):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Go up to the project root
@@ -34,6 +39,9 @@ def load_template_path(template_name: str):
 
     if not re.fullmatch(r"[A-Za-z0-9_.-]+", safe_name):
         raise ValueError("Invalid template name.")
+
+    if safe_name not in ALLOWED_TEMPLATE_NAMES:
+        raise ValueError("Template is not allowed.")
 
     template_path = os.path.realpath(os.path.join(templates_dir, safe_name))
     if os.path.commonpath([templates_dir, template_path]) != templates_dir:

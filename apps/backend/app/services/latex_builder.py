@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import re
 import subprocess
 import tempfile
 import yaml
@@ -22,10 +23,21 @@ def load_template_path(template_name: str):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Go up to the project root
     root_dir = os.path.abspath(os.path.join(current_dir, "../../../../"))
-    
-    # SANITIZE: Use os.path.basename to prevent path traversal
+    templates_dir = os.path.realpath(os.path.join(root_dir, "templates"))
+
+    if not template_name:
+        raise ValueError("Template name is required.")
+
     safe_name = os.path.basename(template_name)
-    template_path = os.path.join(root_dir, "templates", safe_name)
+    if safe_name != template_name:
+        raise ValueError("Invalid template name.")
+
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", safe_name):
+        raise ValueError("Invalid template name.")
+
+    template_path = os.path.realpath(os.path.join(templates_dir, safe_name))
+    if os.path.commonpath([templates_dir, template_path]) != templates_dir:
+        raise ValueError("Invalid template path.")
     
     if not os.path.exists(template_path):
         raise ValueError(f"Template '{safe_name}' not found.")

@@ -20,11 +20,17 @@ from app.models.schemas import CompileRequest
 
 def load_template_path(template_name: str):
     current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Go up to the project root
     root_dir = os.path.abspath(os.path.join(current_dir, "../../../../"))
-    config_path = os.path.join(root_dir, "config.yaml")
-    with open(config_path, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
-    return os.path.join(root_dir, "templates", template_name)
+    
+    # SANITIZE: Use os.path.basename to prevent path traversal
+    safe_name = os.path.basename(template_name)
+    template_path = os.path.join(root_dir, "templates", safe_name)
+    
+    if not os.path.exists(template_path):
+        raise ValueError(f"Template '{safe_name}' not found.")
+        
+    return template_path
 
 def escape_latex(text: str) -> str:
     # Basic LaTeX escape sequence handling

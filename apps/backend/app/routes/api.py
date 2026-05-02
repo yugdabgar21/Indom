@@ -71,7 +71,8 @@ async def analyze_cv_stream(request: AnalysisRequest):
             
             yield f"data: {json.dumps({'progress': 100, 'status': 'Complete!', 'result': analysis_result.model_dump()})}\n\n"
         except Exception as e:
-            yield f"data: {json.dumps({'progress': -1, 'status': f'Error: {str(e)}'})}\n\n"
+            print(f"ERROR in analyze_cv_stream: {str(e)}")
+            yield f"data: {json.dumps({'progress': -1, 'status': 'Internal AI processing error'})}\n\n"
             
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
@@ -81,7 +82,7 @@ async def generate_latex_endpoint(request: CompileRequest):
         tex = await generate_latex(request)
         return {"latex_code": tex}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @router.post("/compile/pdf")
 async def compile_pdf_endpoint(request: CompileRequest):
@@ -90,7 +91,7 @@ async def compile_pdf_endpoint(request: CompileRequest):
         pdf_bytes = await compile_pdf(tex)
         return Response(content=pdf_bytes, media_type="application/pdf")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @router.post("/compile/pdf/stream")
 async def compile_pdf_stream(request: CompileRequest):
@@ -118,7 +119,8 @@ async def compile_pdf_stream(request: CompileRequest):
             
             yield "data: " + json.dumps({"progress": 100, "status": "Complete!", "pdf_base64": pdf_b64}) + "\n\n"
         except Exception as e:
-            yield "data: " + json.dumps({"progress": -1, "status": "Error: " + str(e)}) + "\n\n"
+            print(f"ERROR in compile_pdf_stream: {str(e)}")
+            yield "data: " + json.dumps({"progress": -1, "status": "PDF compilation failed"}) + "\n\n"
     
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 

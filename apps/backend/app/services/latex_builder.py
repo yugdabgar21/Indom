@@ -19,36 +19,41 @@ import tempfile
 import yaml
 from app.models.schemas import CompileRequest
 
-# Restrict template selection to explicitly approved files only.
-ALLOWED_TEMPLATE_NAMES = {
-    "template.tex",
-}
-
 def load_template_path(template_name: str):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Go up to the project root
-    root_dir = os.path.abspath(os.path.join(current_dir, "../../../../"))
-    templates_dir = os.path.realpath(os.path.join(root_dir, "templates"))
-
+    """
+    Safely resolves the template path with strict validation to prevent path traversal (CWE-22).
+    """
     if not template_name:
         raise ValueError("Template name is required.")
 
-    safe_name = os.path.basename(template_name)
-    if safe_name != template_name:
-        raise ValueError("Invalid template name.")
-
-    if not re.fullmatch(r"[A-Za-z0-9_.-]+", safe_name):
-        raise ValueError("Invalid template name.")
-
-    if safe_name not in ALLOWED_TEMPLATE_NAMES:
-        raise ValueError("Template is not allowed.")
-
-    template_path = os.path.realpath(os.path.join(templates_dir, safe_name))
-    if os.path.commonpath([templates_dir, template_path]) != templates_dir:
-        raise ValueError("Invalid template path.")
+    # 1. Strip extension if provided
+    clean_name = template_name.replace(".tex", "")
     
+    # 2. Strict Regex Validation: Only allow alphanumeric, underscores, and hyphens
+    if not re.fullmatch(r"[A-Za-z0-9_\-]+", clean_name):
+        raise ValueError(f"Invalid template name: '{template_name}'")
+        
+    # 3. Whitelist Check
+    ALLOWED_TEMPLATES = {"classic", "modern", "template"}
+    if clean_name not in ALLOWED_TEMPLATES:
+        raise ValueError(f"Template '{clean_name}' is not in the allowed list")
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Go up to the project root
+    root_dir = os.path.abspath(os.path.join(current_dir, "../../../../"))
+    
+    # 4. Use realpath to resolve all symlinks and '..' segments
+    templates_dir = os.path.realpath(os.path.join(root_dir, "templates"))
+    filename = f"{clean_name}.tex"
+    template_path = os.path.realpath(os.path.join(templates_dir, filename))
+
+    # 5. Boundary Check: Ensure the resolved path is still inside the templates directory
+    if not template_path.startswith(templates_dir):
+        raise ValueError("Security Violation: Path traversal detected")
+        
+    # 6. Final Existence Check
     if not os.path.exists(template_path):
-        raise ValueError(f"Template '{safe_name}' not found.")
+        raise ValueError(f"Template file '{filename}' not found on disk")
         
     return template_path
 

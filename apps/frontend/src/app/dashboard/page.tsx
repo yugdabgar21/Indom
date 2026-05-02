@@ -48,7 +48,7 @@ export default function DashboardPage() {
   const generateInitialLatex = async (analysisData: any) => {
     const cvId = localStorage.getItem("indom_cv_id");
     try {
-      const res = await fetch("http://localhost:8000/api/generate/latex", {
+      const res = await fetch(`${API_BASE_URL}/api/generate/latex`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cv_id: cvId, analysis: analysisData, template_name: "classic.tex" }),

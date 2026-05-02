@@ -1,4 +1,5 @@
 <div align="center">
+<<<<<<< HEAD
 
 <img src="apps/frontend/public/logo.png" alt="Indom" width="140" />
 
@@ -37,6 +38,59 @@
 ## 🎯 What is Indom?
 
 **Indom** is a 100% free, open source, locally-run CV tailoring tool. It takes your master CV, cross-references it with any job description, and generates a brand new ATS-optimized LaTeX PDF — tailored, smart, and ready to get you in the room.
+=======
+
+<img src="apps/frontend/public/logo.png" width="120" alt="Indom Logo" />
+
+# INDOM.
+
+**Your CV. Their requirements. No mercy.**
+
+AI-powered ATS CV tailor that analyzes job descriptions, injects missing skills, generates LaTeX PDFs, and builds a 5-day learning roadmap — all from one click.
+
+[𝙹𝚘𝚒𝚗 𝙳𝚒𝚜𝚌𝚘𝚛𝚍](#) ✦ [𝚆𝚎𝚋𝚜𝚒𝚝𝚎](#) ✦ [𝙷𝚘𝚠 𝚝𝚘 𝙸𝚗𝚜𝚝𝚊𝚕𝚕](#quick-start) ✦ [𝙲𝚘𝚗𝚝𝚛𝚒𝚋𝚞𝚝𝚘𝚛𝚜](#contributors) ✦ [𝙻𝚒𝚗𝚔𝚎𝚍𝙸𝚗](#)
+
+</div>
+
+<br>
+
+<div align="center">
+
+![License Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge&color=1d4ed8&labelColor=F0F0E8)
+![Version](https://img.shields.io/badge/Version-1.0.0--MVP-green?style=for-the-badge&color=1d4ed8&labelColor=F0F0E8)
+![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge&color=1d4ed8&labelColor=F0F0E8)
+
+</div>
+
+---
+
+> [!IMPORTANT]
+> **Indom** is designed for high-stakes CV tailoring. It uses "Smart Faking" to align your profile with ATS requirements while providing a structured roadmap to learn the injected skills before your interview. Use with intent.
+
+### How It Works
+1. **Upload** your master CV (PDF)
+2. **Paste** the target job description
+3. **Analyze** gaps and auto-inject required skills and keywords
+4. **Compile** a professional LaTeX-based PDF resume instantly
+5. **Learn** with a 5-day custom roadmap to master any "faked" skills
+
+---
+
+## Key Features
+
+### 🎯 Smart ATS Alignment
+Analyzes job descriptions using advanced LLMs to identify missing keywords and skills, then seamlessly integrates them into your professional profile.
+
+### 📄 Real-time LaTeX Compilation
+Generates high-quality, ATS-friendly PDF resumes using MiKTeX. No more fighting with Word formatting.
+
+### 🗺️ 5-Day Skill Roadmap
+Every tailored CV comes with a 5-day learning plan, complete with verified YouTube resources to help you master new skills quickly.
+
+---
+
+<a id="quick-start"></a>
+>>>>>>> 6e25c3fc (fix: backend connection + readme update)
 
 Unlike other tools, Indom tells you **exactly what it changed** and gives you a **5-day free learning roadmap** so you actually know what you claimed before the interview.
 
@@ -205,9 +259,24 @@ Once all prerequisites are installed:
 
 ### 1. Clone the repo
 
+<<<<<<< HEAD
+=======
+### Prerequisites
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Python** | 3.13+ | Backend logic & AI engine |
+| **Node.js** | 20+ | Frontend UI (Next.js) |
+| **uv** | Latest | Fast Python package management |
+| **MiKTeX** | Latest | PDF compilation (Ensure `pdflatex` is in PATH) |
+
+### Installation
+
+>>>>>>> 6e25c3fc (fix: backend connection + readme update)
 ```bash
+# 1. Clone the repository
 git clone https://github.com/yugdabgar21/Indom.git
 cd Indom
+<<<<<<< HEAD
 ```
 
 ### 2. Start SearXNG (optional but recommended)
@@ -232,10 +301,24 @@ Open Terminal 2:
 
 ```bash
 cd apps/frontend
+=======
+
+# 2. Setup Environment
+cp .env.example .env
+
+# 3. Backend Setup
+cd apps/backend
+uv sync
+uv run python -m uvicorn app.main:app --reload --port 8000
+
+# 4. Frontend Setup
+cd ../frontend
+>>>>>>> 6e25c3fc (fix: backend connection + readme update)
 npm install
 npm run dev
 ```
 
+<<<<<<< HEAD
 ### 5. Open Indom
 
 Visit **http://localhost:3000** in your browser
@@ -383,3 +466,48 @@ You **cannot** take this and sell it as a paid product.
 [Instagram @getindom](https://instagram.com/getindom) · [Issues](https://github.com/yugdabgar21/Indom/issues) · [Apache 2.0](LICENSE)
 
 </div>
+=======
+Open **[http://localhost:3000](http://localhost:3000)** and configure your API key in the Settings panel.
+
+---
+
+## Tech Stack
+| Component | Technology |
+|-----------|------------|
+| **Backend** | FastAPI, LiteLLM, Python 3.13+ |
+| **Frontend** | Next.js 16, React 19, TypeScript |
+| **AI Engine** | OpenRouter (Ollama, GPT-4, Claude 3.5 support) |
+| **Database** | TinyDB (Local JSON storage) |
+| **PDF** | MiKTeX (pdflatex) |
+| **Styling** | Vanilla CSS, Brutalist Design |
+
+---
+
+## Supported AI Providers
+| Provider | Local/Cloud | Status |
+|----------|-------------|--------|
+| **OpenRouter** | Cloud | ✅ Supported (Recommended) |
+| **Ollama** | Local | ✅ Supported |
+| **OpenAI** | Cloud | ✅ Supported |
+| **Anthropic** | Cloud | ✅ Supported |
+| **Google Gemini** | Cloud | ✅ Supported |
+
+---
+
+## Contributing
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+<a id="contributors"></a>
+
+## Contributors
+<a href="https://github.com/yugdabgar21/Indom/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=yugdabgar21/Indom" />
+</a>
+
+---
+
+## License
+Distributed under the **Apache License 2.0**. See `LICENSE` for more information.
+>>>>>>> 6e25c3fc (fix: backend connection + readme update)

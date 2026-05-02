@@ -91,14 +91,41 @@ async def generate_latex(request: CompileRequest) -> str:
         
     return tex
 
+def find_pdflatex():
+    """Try to find pdflatex in system PATH or common MiKTeX install locations."""
+    import shutil
+    # 1. Try system PATH first (best for C: installs)
+    path = shutil.which("pdflatex")
+    if path:
+        return path
+        
+    # 2. Try common Windows installation paths
+    common_paths = [
+        r"C:\Program Files\MiKTeX\miktex\bin\x64\pdflatex.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe"),
+    ]
+    
+    # 3. Add the project-local path as fallback
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(current_dir, "../../../../"))
+    common_paths.append(os.path.join(root_dir, "miktex", "miktex", "bin", "x64", "pdflatex.exe"))
+    
+    for p in common_paths:
+        if os.path.exists(p):
+            return p
+            
+    # Final fallback
+    return "pdflatex"
+
 async def compile_pdf(latex_code: str) -> bytes:
+    pdflatex_cmd = find_pdflatex()
     with tempfile.TemporaryDirectory() as temp_dir:
         tex_path = os.path.join(temp_dir, "cv.tex")
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write(latex_code)
             
         process = subprocess.run(
-            ["pdflatex", "-interaction=nonstopmode", "cv.tex"],
+            [pdflatex_cmd, "-interaction=nonstopmode", "cv.tex"],
             cwd=temp_dir,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
@@ -106,7 +133,9 @@ async def compile_pdf(latex_code: str) -> bytes:
         
         pdf_path = os.path.join(temp_dir, "cv.pdf")
         if not os.path.exists(pdf_path):
-            raise Exception("Failed to compile LaTeX: " + process.stdout.decode('utf-8') + "\n" + process.stderr.decode('utf-8'))
+            stdout_str = process.stdout.decode('utf-8', errors='ignore')
+            stderr_str = process.stderr.decode('utf-8', errors='ignore')
+            raise Exception(f"Failed to compile LaTeX using '{pdflatex_cmd}':\n{stdout_str}\n{stderr_str}")
             
         with open(pdf_path, "rb") as f:
             return f.read()

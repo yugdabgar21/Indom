@@ -83,29 +83,134 @@ Unlike other tools, Indom tells you **exactly what it changed** and gives you a 
 
 ---
 
-## 🛠️ Prerequisites
+## 🛠️ Installation — Step by Step
 
-| Tool | Version | Notes |
-|------|---------|-------|
-| Python | 3.10+ | Backend runtime |
-| Node.js | 18+ | Frontend runtime |
-| uv | Latest | [astral.sh/uv](https://astral.sh/uv) — Python package manager |
-| MiKTeX or TeX Live | Latest | For `pdflatex` — PDF compilation |
-| Docker | Latest | For SearXNG (optional but recommended) |
+Follow these steps **in order**. Don't skip anything.
+
+---
+
+### Step 1 — Install Node.js
+
+Download and install from the official site:
+
+👉 **https://nodejs.org** → Download the LTS version
+
+After installing, verify:
+```bash
+node --version   # should show v18 or higher
+npm --version    # should show a version number
+```
+
+---
+
+### Step 2 — Install Scoop (Windows package manager)
+
+Open **PowerShell as Administrator** and run:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+```
+
+Verify:
+```powershell
+scoop --version
+```
+
+---
+
+### Step 3 — Install uv via Scoop
+
+```powershell
+scoop install uv
+```
+
+Verify:
+```bash
+uv --version
+```
+
+> **What is uv?** It's a fast Python package manager. Think of it like npm but for Python.
+
+---
+
+### Step 4 — Install Python via uv
+
+```bash
+uv python install 3.13
+```
+
+Verify:
+```bash
+uv python list
+```
+
+---
+
+### Step 5 — Install MiKTeX (LaTeX compiler for PDF generation)
+
+Download and install from:
+
+👉 **https://miktex.org/download** → Choose Windows installer
+
+After installing:
+1. Open **MiKTeX Console** from Windows Start menu
+2. Click **"Check for updates"** and install all updates
+3. Go to **Settings → General**
+4. Enable **"Always install missing packages on-the-fly"** ✅
+5. Restart MiKTeX Console
+
+Verify in terminal:
+```bash
+pdflatex --version
+```
+
+> **Why MiKTeX?** Indom generates CVs as LaTeX code and compiles them to professional PDFs using pdflatex.
+
+---
+
+### Step 6 — Install Docker (for SearXNG — optional but recommended)
+
+Download from:
+
+👉 **https://www.docker.com/products/docker-desktop**
+
+After installing, verify:
+```bash
+docker --version
+```
+
+> **Why Docker?** SearXNG runs in Docker and gives Indom real, verified YouTube and course links for your learning roadmap. Without it, links won't appear in the roadmap.
+
+---
+
+### Step 7 — Get an AI API Key
+
+Indom needs an AI model to analyze your CV. Pick one:
+
+| Provider | Free Tier | Link |
+|----------|-----------|------|
+| **OpenRouter** (recommended) | Yes — free models available | https://openrouter.ai |
+| Ollama | 100% free — runs locally | https://ollama.ai |
+| OpenAI | Paid | https://platform.openai.com |
+| Google Gemini | Free tier available | https://aistudio.google.com |
+
+> For beginners, **OpenRouter** is easiest — sign up, get a free API key, done.
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Clone and configure
+Once all prerequisites are installed:
+
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/yugdabgar21/Indom.git
 cd Indom
-cp .env.example .env
 ```
 
-### 2. Start SearXNG — for real learning resource links (optional)
+### 2. Start SearXNG (optional but recommended)
 
 ```bash
 docker run -d -p 8080:8080 searxng/searxng
@@ -113,14 +218,17 @@ docker run -d -p 8080:8080 searxng/searxng
 
 ### 3. Run the Backend
 
+Open Terminal 1:
+
 ```bash
 cd apps/backend
 uv sync
 uv run python -m uvicorn app.main:app --reload --port 8000
-
 ```
 
 ### 4. Run the Frontend
+
+Open Terminal 2:
 
 ```bash
 cd apps/frontend
@@ -128,29 +236,33 @@ npm install
 npm run dev
 ```
 
-### 5. Open and configure
+### 5. Open Indom
 
-Visit **http://localhost:3000**
+Visit **http://localhost:3000** in your browser
 
-Click the ⚙️ settings icon → enter your API key and model. Done.
+Click the ⚙️ **Settings** icon → enter your API key and model name → Save
+
+You're ready. Upload your CV and start tailoring. 🔥
 
 ---
 
 ## ⚙️ Configuration
 
-Edit `config.yaml` at the root:
+All config in `config.yaml` at the root:
 
 ```yaml
 model:
   provider: openrouter    # openrouter | ollama | openai | gemini
-  name: your-model-name
+  name: your-model-name   # e.g. openai/gpt-4o-mini for OpenRouter
   api_key: your-api-key   # or configure via UI settings panel
 
 searxng:
-  url: http://localhost:8080
+  url: http://localhost:8080   # SearXNG Docker instance
 
-template: classic          # classic | modern (coming soon)
+template: classic              # classic | modern (coming soon)
 ```
+
+> You can also configure everything from the **Settings UI** inside the app — no manual file editing needed.
 
 ---
 
@@ -169,9 +281,9 @@ indom/
 │           └── services/   # CV parser, AI engine, LaTeX builder, SearXNG
 ├── docs/                   # Full project documentation
 ├── searxng/                # SearXNG Docker config
-├── config.yaml.example     # Config template
+├── config.yaml.example     # Config template — copy to config.yaml
 ├── docker-compose.yml
-└── .env.example
+└── .env.example            # Copy to .env and fill in values
 ```
 
 ---
@@ -185,7 +297,8 @@ indom/
 | Faking warnings | ✅ | ❌ | ❌ | ❌ |
 | Learning roadmap | ✅ | ❌ | ❌ | ❌ |
 | LaTeX output | ✅ | ❌ | ❌ | ❌ |
-| Fully local | ✅ | ✅ | ❌ | ❌ |
+| Fully local | ✅ | ❌ | ❌ | ❌ |
+| Projects untouched | ✅ | ❌ | ❌ | ❌ |
 | No account needed | ✅ | ✅ | ❌ | ❌ |
 
 ---
@@ -213,14 +326,14 @@ indom/
 Indom is built by freshers for freshers. Every contribution matters.
 
 ```bash
-# Fork the repo, then:
+# Fork the repo on GitHub, then:
 git clone https://github.com/YOUR_USERNAME/Indom.git
 cd Indom
 git checkout -b feature/your-feature-name
 # make your changes
 git commit -m "feat: your feature"
 git push origin feature/your-feature-name
-# open a PR
+# open a Pull Request on GitHub
 ```
 
 **Good first issues are labeled** `good first issue` in the Issues tab.
@@ -233,6 +346,22 @@ We need help with:
 - 📖 Documentation and translations
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
+
+---
+
+## ❓ Troubleshooting
+
+**`article.cls not found` error**
+→ Open MiKTeX Console → Check for updates → Enable auto-install packages on-the-fly
+
+**`uv run uvicorn` fails on Windows**
+→ Use `uv run python -m uvicorn app.main:app --reload --port 8000` instead
+
+**SearXNG links not showing in roadmap**
+→ Make sure Docker is running and SearXNG container is started
+
+**OpenRouter 401 error**
+→ Check your API key in Settings — make sure it starts with `sk-or-v1-`
 
 ---
 

@@ -81,7 +81,9 @@ Unlike other tools, Indom tells you **exactly what it changed** and gives you a 
 | 📚 Learning Roadmap | 5-day plan with free YouTube and course links via SearXNG |
 | 🔒 Fully Local | CV never leaves your machine. Zero cloud. Zero tracking. |
 | ⚙️ Settings UI | Configure API key and model from browser — no .env editing |
-| 🔄 Multi-Model | OpenRouter, Ollama, OpenAI, Gemini — your choice |
+| 🔄 Multi-Model | OpenRouter, Ollama, OpenAI, Gemini, Anthropic, OpenCode Zen — your choice |
+| 🔍 Model Browser | Enter API key → browse & search all available models from your provider |
+| 🔁 Smart Fallback | If your model is down, auto-tries free alternatives with live status |
 | ⚡ Real-time | SSE streaming with live progress bar |
 | 🛡️ ATS-Safe | LaTeX output scores higher than HTML/CSS PDFs |
 
@@ -222,11 +224,15 @@ Indom uses an AI model to analyze your CV. Pick any provider:
 | Provider | Free Tier | Best For | Link |
 |----------|-----------|----------|------|
 | **OpenRouter** ⭐ | Yes — free models available | Beginners, easiest setup | https://openrouter.ai |
+| **OpenCode Zen** ⭐ | Yes — free models available | Free DeepSeek, Mimo models | https://opencode.ai |
 | **Ollama** | 100% free — fully local | Maximum privacy | https://ollama.ai |
 | OpenAI | Paid | GPT-4o quality | https://platform.openai.com |
+| Anthropic | Paid | Claude quality | https://console.anthropic.com |
 | Google Gemini | Free tier | Fast responses | https://aistudio.google.com |
 
 > **Recommended for beginners:** Sign up at OpenRouter → generate a free API key → use model `openai/gpt-4o-mini` for best results.
+
+> **Free alternative:** Sign up at OpenCode Zen → get a free API key → use model `deepseek-v4-flash-free` for zero-cost inference.
 
 > **For maximum privacy:** Install Ollama locally and run `ollama pull qwen2.5:7b` — no API key needed, fully offline.
 
@@ -285,7 +291,7 @@ All config in `config.yaml` at root. Edit it to match your setup:
 
 ```yaml
 model:
-  type: openrouter        # openrouter | ollama | openai | gemini
+  type: openrouter        # openrouter | ollama | openai | gemini | anthropic | opencode-zen | deepseek
   model_name: google/gemma-4-31b-it:free  # or any model from your provider
   endpoint: https://openrouter.ai/api/v1
 
@@ -296,7 +302,7 @@ template:
   default: templates/classic.tex  # classic | modern (coming soon)
 ```
 
-> **Tip:** You can also configure everything from the ⚙️ **Settings UI** inside the app — no manual file editing needed.
+> **Tip:** You can also configure everything from the ⚙️ **Settings UI** inside the app — no manual file editing needed. Enter your API key and the app will auto-fetch all available models from your provider.
 
 ---
 
@@ -347,6 +353,10 @@ indom/
 - [x] Match score before and after
 - [x] 5-day learning roadmap via SearXNG
 - [x] Settings UI for API key and model config
+- [x] Model browsing — search & select from available models
+- [x] OpenCode Zen integration — free inference provider
+- [x] Smart fallback — auto-retry with free models when primary fails
+- [x] Multi-provider support — OpenRouter, OpenAI, Anthropic, Gemini, OpenCode Zen, Ollama, DeepSeek
 - [ ] Cover letter generation
 - [ ] OCR support for image-based CVs
 - [ ] More LaTeX templates

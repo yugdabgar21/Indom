@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  searxng:
+    image: searxng/searxng
+    container_name: indom_searxng
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./searxng:/etc/searxng
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8080/
+    restart: unless-stopped

@@ -1,0 +1,74 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+
+\pagenumbering{gobble}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}[\titlerule]
+
+\begin{document}
+
+%====================
+% HEADER
+%====================
+\begin{center}
+    {\LARGE \textbf{{{FULL_NAME}}}} \\
+    \vspace{4pt}
+    {{JOB_TITLE}} \\
+    \vspace{4pt}
+    {{EMAIL}} \quad | \quad {{PHONE}} \quad | \quad {{LOCATION}} \quad | \quad \href{https://github.com/{{GITHUB_USERNAME}}}{github.com/{{GITHUB_USERNAME}}}
+\end{center}
+
+\vspace{6pt}
+
+%====================
+% PROFESSIONAL SUMMARY
+%====================
+\section*{PROFESSIONAL SUMMARY}
+{{PROFESSIONAL SUMMARY}}
+
+%====================
+% SKILLS
+%====================
+\section*{SKILLS}
+
+\textbf{Languages \& Tools:} {{SKILLS_TOOLS}} \\
+
+\textbf{Automation:} {{SKILLS_AUTOMATION}} \\
+
+\textbf{AI \& Dev:} {{SKILLS_AI_DEV}} \\
+
+\textbf{Other:} {{SKILLS_OTHER}} \\
+
+%====================
+% PROJECTS
+%====================
+\section*{PROJECTS}
+
+{{PROJECTS_LIST}}
+
+%====================
+% EDUCATION
+%====================
+\section*{EDUCATION}
+
+{{EDUCATION_LIST}}
+
+%====================
+% CERTIFICATIONS
+%====================
+\section*{CERTIFICATIONS}
+
+{{CERTIFICATIONS_LIST}}
+
+%====================
+% LANGUAGES
+%====================
+\section*{LANGUAGES}
+
+{{LANGUAGES_LIST}}
+
+\end{document}

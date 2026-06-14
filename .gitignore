@@ -1,0 +1,91 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info/
+.venv/
+env/
+venv/
+ENV/
+
+# =========================
+# Environment
+# =========================
+.env
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# Node
+# =========================
+node_modules/
+.next/
+out/
+
+# =========================
+# Runtime data
+# =========================
+cv_database.json
+settings.json
+db.json
+
+# =========================
+# Generated Artifacts
+# =========================
+/apps/backend/output/
+*.pdf
+
+# LaTeX generated files (ignore)
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Allow template .tex files
+!templates/*.tex
+
+# =========================
+# OS junk
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Misc
+# =========================
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# =========================
+# Caches / Testing
+# =========================
+.cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints

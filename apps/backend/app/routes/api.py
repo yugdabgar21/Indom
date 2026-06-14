@@ -16,7 +16,7 @@ from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import Response, JSONResponse, StreamingResponse
 import json
 import asyncio
-from app.models.schemas import CVUploadResponse, AnalysisRequest, CompileRequest, AIAnalysisResponse
+from app.models.schemas import CVUploadResponse, AnalysisRequest, CompileRequest, AIAnalysisResponse, SaveSettingsRequest, FetchModelsRequest
 from app.services.cv_parser import extract_text_from_pdf
 from app.services.ai_engine import analyze_cv
 from app.services.latex_builder import generate_latex, compile_pdf
@@ -27,12 +27,27 @@ router = APIRouter()
 db = TinyDB('cv_database.json')
 settings_db = TinyDB('settings.json')
 
+MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
+
 @router.post("/cv/upload", response_model=CVUploadResponse)
 async def upload_cv(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
-        
-    contents = await file.read()
+
+    # Stream-read with size limit to prevent memory exhaustion
+    chunks = []
+    total = 0
+    async for chunk in file:
+        total += len(chunk)
+        if total > MAX_UPLOAD_SIZE:
+            raise HTTPException(status_code=413, detail="File too large. Maximum size is 10 MB.")
+        chunks.append(chunk)
+    contents = b"".join(chunks)
+
+    # Validate PDF magic bytes
+    if not contents[:5] == b"%PDF-":
+        raise HTTPException(status_code=400, detail="File is not a valid PDF.")
+
     try:
         text = await extract_text_from_pdf(contents)
     except ValueError as e:
@@ -53,6 +68,11 @@ async def analyze_cv_stream(request: AnalysisRequest):
     cv_text = result[0]['text']
     
     async def event_generator():
+        fallback_queue = asyncio.Queue()
+        
+        async def on_fallback(event):
+            await fallback_queue.put(event)
+        
         try:
             yield f"data: {json.dumps({'progress': 10, 'status': 'Parsing CV...'})}\n\n"
             await asyncio.sleep(0.5)
@@ -61,7 +81,45 @@ async def analyze_cv_stream(request: AnalysisRequest):
             await asyncio.sleep(0.5)
             
             yield f"data: {json.dumps({'progress': 50, 'status': 'AI Faking Skills & Tailoring Projects...'})}\n\n"
-            analysis_result = await analyze_cv(cv_text, request.job_description)
+            
+            # Run analyze_cv in a task so we can stream fallback events in real-time
+            analysis_task = asyncio.create_task(
+                analyze_cv(cv_text, request.job_description, on_fallback=on_fallback)
+            )
+            
+            # Poll for fallback events while analysis is running
+            while not analysis_task.done():
+                try:
+                    event = await asyncio.wait_for(fallback_queue.get(), timeout=0.3)
+                    # Map fallback events to user-friendly SSE messages
+                    if event["type"] == "trying":
+                        model_short = event["model"].split("/")[-1]  # e.g. "nemotron-nano-9b-v2:free"
+                        attempt = event.get("attempt", "?")
+                        total = event.get("total", "?")
+                        progress = min(50 + (int(attempt) * 4), 75)  # 54, 58, 62, 66, 70...
+                        yield f"data: {json.dumps({'progress': progress, 'status': f'⚡ Trying model: {model_short} ({attempt}/{total})...', 'fallback': event})}\n\n"
+                    elif event["type"] == "failed":
+                        model_short = event["model"].split("/")[-1]
+                        reason = event.get("reason", "Unknown")
+                        yield f"data: {json.dumps({'progress': -2, 'status': f'⚠ {model_short} unavailable — {reason}', 'fallback': event})}\n\n"
+                    elif event["type"] == "success":
+                        model_short = event["model"].split("/")[-1]
+                        yield f"data: {json.dumps({'progress': 76, 'status': f'✓ Connected to {model_short}', 'fallback': event})}\n\n"
+                except asyncio.TimeoutError:
+                    continue  # No event yet, keep polling
+            
+            # Drain any remaining events in the queue
+            while not fallback_queue.empty():
+                try:
+                    event = fallback_queue.get_nowait()
+                    if event["type"] == "success":
+                        model_short = event["model"].split("/")[-1]
+                        yield f"data: {json.dumps({'progress': 76, 'status': f'✓ Connected to {model_short}', 'fallback': event})}\n\n"
+                except asyncio.QueueEmpty:
+                    break
+            
+            # Get the result (may raise if all models failed)
+            analysis_result = await analysis_task
             
             yield f"data: {json.dumps({'progress': 80, 'status': 'Fetching SearXNG Links...'})}\n\n"
             from app.services.roadmap_builder import build_enriched_roadmap
@@ -73,7 +131,16 @@ async def analyze_cv_stream(request: AnalysisRequest):
         except Exception as e:
             error_msg = str(e)
             print(f"ERROR in analyze_cv_stream: {error_msg}")
-            yield f"data: {json.dumps({'progress': -1, 'status': error_msg})}\n\n"
+            
+            # Check if it's a PROVIDER_DOWN error with structured failed_models data
+            if error_msg.startswith("PROVIDER_DOWN:"):
+                try:
+                    failed_models = json.loads(error_msg.replace("PROVIDER_DOWN:", "", 1))
+                except Exception:
+                    failed_models = []
+                yield f"data: {json.dumps({'progress': -1, 'status': 'All AI models are currently unavailable', 'provider_issue': True, 'failed_models': failed_models})}\n\n"
+            else:
+                yield f"data: {json.dumps({'progress': -1, 'status': error_msg})}\n\n"
             
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
@@ -144,41 +211,37 @@ async def get_settings():
     return all_settings[0]
 
 @router.post("/settings")
-async def save_settings(request: dict):
+async def save_settings(request: SaveSettingsRequest):
     import os
     settings_db.truncate()
     settings_db.insert({
-        "api_key": request.get("api_key", ""),
-        "model_provider": request.get("model_provider", "openrouter"),
-        "model_name": request.get("model_name", "google/gemma-4-31b-it:free"),
-        "searxng_url": request.get("searxng_url", "http://localhost:8888"),
+        "api_key": request.api_key,
+        "model_provider": request.model_provider,
+        "model_name": request.model_name,
+        "searxng_url": request.searxng_url,
     })
     # Set the correct env var based on provider
-    provider = request.get("model_provider", "openrouter")
-    if request.get("api_key"):
-        if provider == "opencode-zen":
-            os.environ["OPENCODE_API_KEY"] = request["api_key"]
-        elif provider == "openai":
-            os.environ["OPENAI_API_KEY"] = request["api_key"]
-        elif provider == "anthropic":
-            os.environ["ANTHROPIC_API_KEY"] = request["api_key"]
-        elif provider == "gemini":
-            os.environ["GEMINI_API_KEY"] = request["api_key"]
+    if request.api_key:
+        if request.model_provider == "opencode-zen":
+            os.environ["OPENCODE_API_KEY"] = request.api_key
+        elif request.model_provider == "openai":
+            os.environ["OPENAI_API_KEY"] = request.api_key
+        elif request.model_provider == "anthropic":
+            os.environ["ANTHROPIC_API_KEY"] = request.api_key
+        elif request.model_provider == "gemini":
+            os.environ["GEMINI_API_KEY"] = request.api_key
         else:
-            os.environ["OPENROUTER_API_KEY"] = request["api_key"]
+            os.environ["OPENROUTER_API_KEY"] = request.api_key
     return {"status": "saved"}
 
 
 @router.post("/models")
-async def fetch_models(request: dict):
+async def fetch_models(request: FetchModelsRequest):
     """Fetch available models from a provider's API."""
     import httpx
 
-    provider = request.get("provider", "")
-    api_key = request.get("api_key", "")
-
-    if not provider or not api_key:
-        return {"models": [], "count": 0, "error": "Provider and API key required"}
+    provider = request.provider
+    api_key = request.api_key
 
     models = []
 

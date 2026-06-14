@@ -68,3 +68,19 @@ class CompileRequest(BaseModel):
     
     class Config:
         extra = "ignore"
+
+class SaveSettingsRequest(BaseModel):
+    api_key: str = ""
+    model_provider: str = "openrouter"
+    model_name: str = "google/gemma-4-31b-it:free"
+    searxng_url: str = "http://localhost:8888"
+
+    class Config:
+        extra = "ignore"
+
+class FetchModelsRequest(BaseModel):
+    provider: str
+    api_key: str
+
+    class Config:
+        extra = "ignore"

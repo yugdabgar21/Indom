@@ -17,7 +17,16 @@ export const metadata: Metadata = {
   title: "Indom - ATS CV Tailor",
   description: "Your CV. Their requirements. No mercy.",
   icons: {
-    icon: "/logo.png",
+    icon: [
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
+  other: {
+    "apple-mobile-web-app-title": "Indom",
   },
 };
 

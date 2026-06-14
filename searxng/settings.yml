@@ -1,7 +1,8 @@
 use_default_settings: true
 
 server:
-    secret_key: "indom_secret_key_123"
+    # Generate a random key: python3 -c "import secrets; print(secrets.token_hex(32))"
+    secret_key: "change_me_before_running"
 
 search:
     formats:

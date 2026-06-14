@@ -50,8 +50,25 @@ def load_settings():
     config = load_config()
     return config["model"]["type"], config["model"]["model_name"]
 
-async def analyze_cv(cv_text: str, job_description: str) -> AIAnalysisResponse:
+async def analyze_cv(cv_text: str, job_description: str, on_fallback=None) -> AIAnalysisResponse:
+    """Analyze CV against job description using AI.
+    
+    Args:
+        on_fallback: Optional async callback for fallback progress events.
+            Called with dicts like:
+            {"type": "trying", "model": "...", "attempt": 1, "total": 5}
+            {"type": "failed", "model": "...", "reason": "503 Service Unavailable"}
+            {"type": "success", "model": "..."}
+    """
     model_type, model_name = load_settings()
+    
+    async def _emit(event: dict):
+        """Safely emit a fallback event if callback is provided."""
+        if on_fallback:
+            try:
+                await on_fallback(event)
+            except Exception:
+                pass  # Never let callback errors break the main flow
     
     system_prompt = """
     You are an expert ATS CV tailor. Your mandate: "SMART FAKING".
@@ -114,10 +131,33 @@ async def analyze_cv(cv_text: str, job_description: str) -> AIAnalysisResponse:
     
     import asyncio as _asyncio
     last_error = None
+    failed_models = []  # Track all failed models with reasons
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": f"CV:\n{cv_text}\n\nJob Description:\n{job_description}"}
     ]
+    
+    def _short_reason(e: Exception) -> str:
+        """Extract a short, user-friendly error reason from an exception."""
+        msg = str(e)
+        if hasattr(e, 'response') and e.response is not None:
+            status = getattr(e.response, 'status_code', None)
+            if status == 503:
+                return "503 Service Unavailable"
+            elif status == 429:
+                return "429 Rate Limited"
+            elif status == 401:
+                return "401 Unauthorized"
+            elif status:
+                return f"HTTP {status}"
+        if "timeout" in msg.lower() or "timed out" in msg.lower():
+            return "Request Timeout"
+        if "rate" in msg.lower() and "limit" in msg.lower():
+            return "Rate Limited"
+        # Truncate long messages
+        if len(msg) > 80:
+            return msg[:77] + "..."
+        return msg
     
     # --- OpenCode Zen: direct HTTP call (no litellm) ---
     if model_type == "opencode-zen":
@@ -126,6 +166,7 @@ async def analyze_cv(cv_text: str, job_description: str) -> AIAnalysisResponse:
         if not zen_api_key:
             raise ValueError("NO_API_KEY:OpenCode Zen API key is not set. Please add your API key in Settings.")
         print(f"DEBUG: Attempting AI analysis with model: zen/{model_name}")
+        await _emit({"type": "trying", "model": f"zen/{model_name}", "attempt": 1, "total": 1})
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
                 resp = await client.post(
@@ -146,12 +187,16 @@ async def analyze_cv(cv_text: str, job_description: str) -> AIAnalysisResponse:
                 data = resp.json()
                 content = data["choices"][0]["message"]["content"]
                 print(f"DEBUG: Successfully used model: zen/{model_name}")
+                await _emit({"type": "success", "model": f"zen/{model_name}"})
         except Exception as e:
             error_detail = str(e)
             # Try to extract response body for httpx errors
             if hasattr(e, 'response') and e.response is not None:
                 error_detail = f"HTTP {e.response.status_code}: {e.response.text}"
+            reason = _short_reason(e)
             print(f"WARNING: Zen model zen/{model_name} failed: {error_detail}")
+            await _emit({"type": "failed", "model": f"zen/{model_name}", "reason": reason})
+            failed_models.append({"model": f"zen/{model_name}", "reason": reason})
             content = None
             last_error = e
         
@@ -169,19 +214,25 @@ async def analyze_cv(cv_text: str, job_description: str) -> AIAnalysisResponse:
                 "openrouter/google/gemma-4-31b-it:free",
                 "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
             ]
-            for model_id in fallback_models:
+            total = len(fallback_models)
+            for idx, model_id in enumerate(fallback_models):
                 try:
                     print(f"DEBUG: Fallback — attempting model: {model_id}")
+                    await _emit({"type": "trying", "model": model_id, "attempt": idx + 1, "total": total})
                     response = await acompletion(model=model_id, messages=messages)
                     content = response.choices[0].message.content
                     print(f"DEBUG: Successfully used fallback: {model_id}")
+                    await _emit({"type": "success", "model": model_id})
                     break
                 except Exception as e:
+                    reason = _short_reason(e)
                     print(f"WARNING: Fallback {model_id} failed: {str(e)}")
+                    await _emit({"type": "failed", "model": model_id, "reason": reason})
+                    failed_models.append({"model": model_id, "reason": reason})
                     last_error = e
                     await _asyncio.sleep(1)
             else:
-                raise ValueError(f"All AI models failed. Last error: {last_error}")
+                raise ValueError(f"PROVIDER_DOWN:{json.dumps(failed_models)}")
     
     # --- All other providers: use litellm ---
     else:
@@ -194,19 +245,25 @@ async def analyze_cv(cv_text: str, job_description: str) -> AIAnalysisResponse:
             "openrouter/google/gemma-4-31b-it:free",
             "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
         ]
-        for model_id in fallback_models:
+        total = len(fallback_models)
+        for idx, model_id in enumerate(fallback_models):
             try:
                 print(f"DEBUG: Attempting AI analysis with model: {model_id}")
+                await _emit({"type": "trying", "model": model_id, "attempt": idx + 1, "total": total})
                 response = await acompletion(model=model_id, messages=messages)
                 content = response.choices[0].message.content
                 print(f"DEBUG: Successfully used model: {model_id}")
+                await _emit({"type": "success", "model": model_id})
                 break
             except Exception as e:
+                reason = _short_reason(e)
                 print(f"WARNING: Model {model_id} failed: {str(e)}")
+                await _emit({"type": "failed", "model": model_id, "reason": reason})
+                failed_models.append({"model": model_id, "reason": reason})
                 last_error = e
                 await _asyncio.sleep(1)
         else:
-            raise ValueError(f"All AI models failed. Last error: {last_error}")
+            raise ValueError(f"PROVIDER_DOWN:{json.dumps(failed_models)}")
     
     if content is None:
         raise ValueError("AI returned an empty response.")

@@ -34,10 +34,14 @@ async def upload_cv(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
 
-    # Stream-read with size limit to prevent memory exhaustion
+    # Read with size limit to prevent memory exhaustion
+    CHUNK_SIZE = 64 * 1024  # 64 KB
     chunks = []
     total = 0
-    async for chunk in file:
+    while True:
+        chunk = await file.read(CHUNK_SIZE)
+        if not chunk:
+            break
         total += len(chunk)
         if total > MAX_UPLOAD_SIZE:
             raise HTTPException(status_code=413, detail="File too large. Maximum size is 10 MB.")

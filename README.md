@@ -16,7 +16,7 @@
 <p>
   <img src="https://img.shields.io/badge/License-Apache_2.0-00ff87.svg" alt="License" />
   <img src="https://img.shields.io/badge/Python-3.10+-00ff87.svg" alt="Python" />
-  <img src="https://img.shields.io/badge/Next.js-15-00ff87.svg" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Next.js-16-00ff87.svg" alt="Next.js" />
   <img src="https://img.shields.io/badge/PRs-Welcome-00ff87.svg" alt="PRs Welcome" />
   <img src="https://img.shields.io/badge/Cost-Zero-00ff87.svg" alt="Zero Cost" />
   <img src="https://img.shields.io/badge/Cloud-None-00ff87.svg" alt="No Cloud" />
@@ -280,24 +280,19 @@ Upload your CV → Paste a job description → Hit **Commence Faking** 🔥
 
 ## ⚙️ Configuration
 
-All config in `config.yaml` at root. Copy the example first:
-
-```bash
-cp config.yaml.example config.yaml
-```
-
-Then edit:
+All config in `config.yaml` at root. Edit it to match your setup:
 
 ```yaml
 model:
-  provider: openrouter    # openrouter | ollama | openai | gemini
-  name: your-model-name   # e.g. openai/gpt-4o-mini for OpenRouter
-  api_key: your-api-key   # or configure via Settings UI in browser
+  type: openrouter        # openrouter | ollama | openai | gemini
+  model_name: google/gemma-4-31b-it:free  # or any model from your provider
+  endpoint: https://openrouter.ai/api/v1
 
 searxng:
   url: http://localhost:8080   # SearXNG Docker instance
 
-template: classic              # classic | modern (coming soon)
+template:
+  default: templates/classic.tex  # classic | modern (coming soon)
 ```
 
 > **Tip:** You can also configure everything from the ⚙️ **Settings UI** inside the app — no manual file editing needed.
@@ -309,7 +304,7 @@ template: classic              # classic | modern (coming soon)
 ```
 indom/
 ├── apps/
-│   ├── frontend/           # Next.js 15 + React + TypeScript + Tailwind
+│   ├── frontend/           # Next.js 16 + React + TypeScript + Tailwind
 │   │   └── src/
 │   │       ├── app/        # Pages and routes
 │   │       └── components/ # UI components
@@ -317,11 +312,11 @@ indom/
 │       └── app/
 │           ├── routes/     # API endpoints
 │           └── services/   # CV parser, AI engine, LaTeX builder, SearXNG
-├── docs/                   # Full project documentation
 ├── searxng/                # SearXNG Docker config
-├── config.yaml.example     # Config template — copy to config.yaml
+├── templates/              # LaTeX CV templates
+├── config.yaml             # Model & SearXNG configuration
 ├── docker-compose.yml
-└── .env.example            # Copy to .env
+└── .env.example            # Copy to .env and add API keys
 ```
 
 ---
